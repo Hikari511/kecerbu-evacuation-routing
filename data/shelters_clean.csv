@@ -1,0 +1,25 @@
+shelterId,namaSesuaiPaper,namaModern,desa,kecamatan,lat,lon,validCoordinate,tingkatKeyakinan,catatan
+S1_01,Tsunami Shelter BNPB,Gedung TES Pasar Wisata Pangandaran,Pananjung,Pangandaran,-7.691769,108.653847,TRUE,Tinggi,Identik dengan Node V31 dalam graph Wijayanto et al. (2025)
+S1_02,Pangandaran Mosque,Masjid Besar Al-Hikmah Pangandaran,Pangandaran,Pangandaran,-7.696111,108.655833,TRUE,Tinggi,Berada dekat area komersial pantai
+S1_03,Soccer Field,Lapangan Merdeka Sidamulih / Lapangan Sepakbola,Belum Terverifikasi,Sidamulih,,,FALSE,Rendah,TIDAK ADA KOORDINAT - nama lokasi terlalu generik, perlu verifikasi manual
+S1_04,Ciliang Village Meeting Hall,Aula Desa Ciliang,Ciliang,Parigi,-7.684120,108.521340,TRUE,Sedang,Jauh di sebelah barat semenanjung Pangandaran
+S1_05,Parigi Mosque,Masjid Besar Parigi / Masjid Jami Parigi,Parigi,Parigi,-7.692250,108.491640,TRUE,Tinggi,Wilayah administratif Parigi
+S1_06,Pangandaran Regent Office,Kantor Bupati Pangandaran (Parigi),Parigi,Parigi,-7.696120,108.490810,TRUE,Tinggi,Berada di Parigi
+S1_07,Conservation Area,Cagar Alam Pananjung Pangandaran,Pananjung,Pangandaran,-7.712540,108.658420,TRUE,Tinggi,Ujung selatan semenanjung area terbuka alami
+S1_08,Tanjakan Haras,Tanjakan Haras (Area Perbukitan),Belum Terverifikasi,Cijulang,-7.733510,108.455210,TRUE,Sedang,Sektor barat Kec. Cijulang
+S2_01,SMPN 1 Pangandaran,SMP Negeri 1 Pangandaran,Pananjung,Pangandaran,-7.684144,108.657519,TRUE,Tinggi,
+S2_02,SMKN 1 Pangandaran,SMK Negeri 1 Pangandaran,Pananjung,Pangandaran,-7.683512,108.656840,TRUE,Tinggi,
+S2_03,Al Falah Mosque,Masjid Al-Falah Cijulang,Cijulang,Cijulang,-7.728940,108.456120,TRUE,Sedang,
+S2_04,Al Islah Mosque,Masjid Al-Ishlah Cijulang,Cijulang,Cijulang,-7.724110,108.459340,TRUE,Sedang,
+S2_05,Al Istikmal Mosque,Masjid Al-Istikmal,Cikembulan,Sidamulih,-7.681120,108.618930,TRUE,Sedang,
+S2_06,Ar Riyadh Mosque,Masjid Ar-Riyadh,Karangbenda,Parigi,-7.674150,108.514210,TRUE,Sedang,
+S2_07,Hidayatul Falah Mosque,Masjid Hidayatul Falah,Cibenda,Parigi,-7.678420,108.498110,TRUE,Sedang,
+S2_08,MTS Bojong Cibenda,MTsS Bojong Cibenda,Cibenda,Parigi,-7.671140,108.495230,TRUE,Tinggi,
+S2_09,Nuansa Bangunan,Toko Bahan Bangunan Nuansa,Cibenda,Parigi,-7.681210,108.496540,TRUE,Sedang,
+S2_10,Posyandu Dusun Patrol,Posyandu Patrol Cibenda,Cibenda,Parigi,,,FALSE,Rendah,TIDAK ADA KOORDINAT - data mikro dusun tidak tersedia di sumber publik
+S2_11,Puskesmas Cikembulan,UPTD Puskesmas Cikembulan,Cikembulan,Sidamulih,-7.679122,108.615431,TRUE,Tinggi,
+S2_12,SDN 3 Cibenda,SD Negeri 3 Cibenda,Cibenda,Parigi,-7.673840,108.494120,TRUE,Tinggi,
+S2_13,SDN 1 Karangbenda,SD Negeri 1 Karangbenda,Karangbenda,Parigi,-7.670510,108.512140,TRUE,Tinggi,
+S2_14,SDN 1 Sukaresik,SD Negeri 1 Sukaresik,Sukaresik,Sidamulih,-7.674310,108.581240,TRUE,Tinggi,
+S2_15,SDN 2 Cibenda,SD Negeri 2 Cibenda,Cibenda,Parigi,-7.675120,108.496110,TRUE,Tinggi,
+S2_16,Parigi Market,Pasar Baru Parigi,Parigi,Parigi,-7.691430,108.492150,TRUE,Tinggi,

@@ -1,0 +1,19 @@
+# Python environments and caches
+.venv/
+.python_packages/
+__pycache__/
+*.py[cod]
+
+# Generated/download caches
+cache/
+
+# Editor and operating-system files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Local secrets
+.env
+.env.*
+!.env.example

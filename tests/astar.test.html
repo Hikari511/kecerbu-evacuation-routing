@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>EvaTour — Tes Algoritma A*</title>
+  <style>
+    body { font-family: monospace; padding: 20px; background: #1a1a2e; color: #eee; }
+    .pass { color: #4caf50; }
+    .fail { color: #f44336; }
+    .info { color: #90caf9; }
+    pre { background: #16213e; padding: 12px; border-radius: 6px; overflow-x: auto; }
+    h2 { color: #e94560; }
+  </style>
+</head>
+<body>
+  <h1>🧪 EvaTour — Tes Algoritma A*</h1>
+  <p class="info">Buka Console (F12) untuk detail lebih lanjut.</p>
+  <div id="results"></div>
+
+  <script type="module">
+    import { astar, heuristic, MinHeap } from '../js/astar.js';
+
+    const results = document.getElementById('results');
+
+    function log(message, passed) {
+      const p = document.createElement('pre');
+      p.className = passed ? 'pass' : 'fail';
+      p.textContent = (passed ? '✅ PASS' : '❌ FAIL') + ' — ' + message;
+      results.appendChild(p);
+      console.log(p.textContent);
+    }
+
+    function section(title) {
+      const h = document.createElement('h2');
+      h.textContent = title;
+      results.appendChild(h);
+    }
+
+    // ========================================
+    // TES 1: Jalur lurus tanpa obstacle
+    // ========================================
+    section('Tes 1: Jalur lurus tanpa obstacle');
+
+    const grid1 = [
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+    ];
+
+    const result1 = astar(grid1, [0, 0], [4, 4]);
+    log(`Jalur ditemukan: ${result1.found}`, result1.found === true);
+    log(`Panjang path: ${result1.path.length} (expected: 5)`, result1.path.length === 5);
+    // Jalur diagonal optimal: (0,0)→(1,1)→(2,2)→(3,3)→(4,4)
+    // Total cost = 4 * √2 ≈ 5.657
+    log(`Total cost: ${result1.totalCost.toFixed(3)} (expected: ~5.657)`, 
+      Math.abs(result1.totalCost - 4 * Math.SQRT2) < 0.001);
+    log(`Nodes explored: ${result1.nodesExplored}`, result1.nodesExplored > 0);
+
+    // ========================================
+    // TES 2: Obstacle menghalangi jalur diagonal
+    // ========================================
+    section('Tes 2: Obstacle menghalangi diagonal');
+
+    const grid2 = [
+      [0, 0, 0, 0, 0],
+      [0, 1, 1, 0, 0],
+      [0, 1, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+    ];
+
+    const result2 = astar(grid2, [0, 0], [4, 4]);
+    log(`Jalur ditemukan: ${result2.found}`, result2.found === true);
+    log(`Path menghindari obstacle: ${JSON.stringify(result2.path)}`, 
+      result2.path.every(([r, c]) => grid2[r][c] === 0));
+    log(`Nodes explored: ${result2.nodesExplored}`, result2.nodesExplored > 0);
+
+    // ========================================
+    // TES 3: Tidak ada jalur (terisolasi)
+    // ========================================
+    section('Tes 3: Tidak ada jalur (goal terisolasi)');
+
+    const grid3 = [
+      [0, 0, 1, 0, 0],
+      [0, 0, 1, 0, 0],
+      [1, 1, 1, 1, 1],
+      [0, 0, 1, 0, 0],
+      [0, 0, 1, 0, 0],
+    ];
+
+    const result3 = astar(grid3, [0, 0], [4, 4]);
+    log(`Jalur TIDAK ditemukan: ${!result3.found}`, result3.found === false);
+    log(`Path kosong: ${result3.path.length === 0}`, result3.path.length === 0);
+
+    // ========================================
+    // TES 4: Start = Goal
+    // ========================================
+    section('Tes 4: Start sama dengan Goal');
+
+    const result4 = astar(grid1, [2, 2], [2, 2]);
+    log(`Jalur ditemukan: ${result4.found}`, result4.found === true);
+    log(`Path length = 1 (hanya titik itu sendiri): ${result4.path.length}`, 
+      result4.path.length === 1);
+    log(`Total cost = 0: ${result4.totalCost}`, result4.totalCost === 0);
+
+    // ========================================
+    // TES 5: Corner-cutting dicegah
+    // ========================================
+    section('Tes 5: Corner-cutting dicegah');
+
+    // Grid di mana diagonal (0,0)→(1,1) seharusnya diblokir
+    // karena (0,1) dan (1,0) keduanya obstacle
+    const grid5 = [
+      [0, 1, 0],
+      [1, 0, 0],
+      [0, 0, 0],
+    ];
+
+    const result5 = astar(grid5, [0, 0], [1, 1]);
+    // Tidak bisa langsung diagonal karena corner-cutting
+    // Harus cari jalan lain atau tidak ada jalur
+    log(`Corner-cutting dicegah — found: ${result5.found}`, result5.found === false);
+
+    // ========================================
+    // TES 6: Start atau Goal di obstacle
+    // ========================================
+    section('Tes 6: Start/Goal di obstacle');
+
+    const grid6 = [
+      [1, 0, 0],
+      [0, 0, 0],
+      [0, 0, 0],
+    ];
+
+    const result6 = astar(grid6, [0, 0], [2, 2]);
+    log(`Start di obstacle → not found: ${!result6.found}`, result6.found === false);
+
+    // ========================================
+    // TES 7: Heuristik admissible
+    // ========================================
+    section('Tes 7: Heuristik Euclidean Distance');
+
+    const h = heuristic(0, 0, 3, 4);
+    log(`h(0,0 → 3,4) = ${h.toFixed(3)} (expected: 5.000)`, Math.abs(h - 5) < 0.001);
+
+    const h2 = heuristic(2, 3, 2, 3);
+    log(`h(2,3 → 2,3) = ${h2} (expected: 0)`, h2 === 0);
+
+    // ========================================
+    // RINGKASAN
+    // ========================================
+    section('Selesai');
+    const allPre = results.querySelectorAll('pre');
+    const passed = results.querySelectorAll('.pass').length;
+    const failed = results.querySelectorAll('.fail').length;
+    const summary = document.createElement('pre');
+    summary.className = failed === 0 ? 'pass' : 'fail';
+    summary.textContent = `Total: ${passed + failed} tes | ✅ ${passed} pass | ❌ ${failed} fail`;
+    results.appendChild(summary);
+  </script>
+</body>
+</html>

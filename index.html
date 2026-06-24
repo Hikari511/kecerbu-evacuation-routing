@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EvaTour | Rute Evakuasi Tsunami Pangandaran</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <h1>🌊 EvaTour</h1>
+    <p class="subtitle">A* Grid Simulation dan Graph Jalan Wijayanto 2025</p>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main">
+    <section class="project-hero">
+      <div class="project-hero-copy">
+        <p class="hero-kicker">A* TSUNAMI EVACUATION ROUTING</p>
+        <h2>Dari simulasi grid menuju routing pedestrian nyata.</h2>
+        <p>
+          Prototype akademik pencarian rute evakuasi Pangandaran dalam tiga
+          tahap eksperimen yang saling terhubung.
+        </p>
+      </div>
+      <div class="hero-stats">
+        <article><strong>2.405</strong><span>Node OSM</span></article>
+        <article><strong>6.236</strong><span>Directed edge</span></article>
+        <article><strong>8</strong><span>Shelter valid</span></article>
+        <article><strong>A*</strong><span>Algoritma utama</span></article>
+      </div>
+    </section>
+
+    <!-- Instruksi -->
+    <section class="instructions">
+      <p><strong>Cara Penggunaan:</strong> Klik pada peta di bawah untuk menentukan posisi Anda.
+         Pada mode OSM, A* membandingkan rute pedestrian menuju shelter yang lolos audit
+         dan memilih total jarak terpendek. Hasil ini belum menyatakan shelter paling aman.</p>
+    </section>
+
+    <section class="scenario-navigation" aria-labelledby="scenarioNavigationTitle">
+      <div class="scenario-navigation-copy">
+        <p class="eyebrow">ALUR PENGEMBANGAN</p>
+        <h2 id="scenarioNavigationTitle">Pilih skenario eksperimen</h2>
+        <p>
+          Gunakan tab untuk berpindah mode. Routing OSM menjadi demo utama,
+          sedangkan dua mode lain menunjukkan proses dan validasi penelitian.
+        </p>
+      </div>
+      <div class="scenario-tabs" role="tablist" aria-label="Skenario EvaTour">
+        <button class="scenario-tab" type="button" role="tab"
+          aria-selected="false" data-scenario="grid">
+          <span>01</span><strong>Simulasi Grid<small>Progress 1-2</small></strong>
+        </button>
+        <button class="scenario-tab" type="button" role="tab"
+          aria-selected="false" data-scenario="journal">
+          <span>02</span><strong>Validasi Jurnal<small>Graph Wijayanto</small></strong>
+        </button>
+        <button class="scenario-tab active" type="button" role="tab"
+          aria-selected="true" data-scenario="osm">
+          <span>03</span><strong>Routing OSM<small>Demo utama</small></strong>
+          <em>UTAMA</em>
+        </button>
+      </div>
+    </section>
+
+    <!-- Progress 2 Summary -->
+    <section class="progress2-summary">
+      <h2>🚧 Progress 2: OSM + Shelter Referensi Jurnal</h2>
+      <div class="summary-cards">
+        <article class="summary-card">
+          <strong>OSM Background</strong>
+          <span>Peta Pangandaran ditampilkan sebagai konteks geografis di belakang grid.</span>
+        </article>
+        <article class="summary-card">
+          <strong>17 Shelter Kandidat</strong>
+          <span>1 existing shelter dan 16 potential shelters mengacu Husa & Damayanti (2019).</span>
+        </article>
+        <article class="summary-card">
+          <strong>Multi-Shelter A*</strong>
+          <span>A* dijalankan ke semua shelter, lalu memilih total cost terendah.</span>
+        </article>
+      </div>
+      <p class="summary-note">
+        Catatan: posisi shelter pada grid masih approximate untuk demo Progress 2; nama, elevasi,
+        distrik, dan kapasitas mengikuti tabel jurnal.
+      </p>
+    </section>
+
+    <!-- Progress 3 -->
+    <section class="progress3-summary">
+      <div>
+        <span class="progress-badge">PROGRESS 3</span>
+        <h2>A* pada Graph Jalan Referensi Wijayanto et al. (2025)</h2>
+        <p>
+          Rute sekarang dapat dihitung pada 31 vertex persimpangan dan 46 edge
+          unik berbobot jarak. Hasil A* divalidasi terhadap rute Dijkstra jurnal.
+        </p>
+      </div>
+      <div class="progress3-metrics">
+        <div><strong>31</strong><span>Vertex</span></div>
+        <div><strong>46</strong><span>Edge unik</span></div>
+        <div><strong>V31</strong><span>TES tujuan</span></div>
+      </div>
+    </section>
+
+    <section class="graph-section">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">MODE UTAMA PROGRESS 3</p>
+          <h2>Routing Graph Jalan</h2>
+        </div>
+        <p>Klik peta untuk memilih vertex jalan terdekat, atau gunakan skenario jurnal.</p>
+      </div>
+
+      <div id="graphMap" aria-label="Peta graph evakuasi Pangandaran"></div>
+
+      <div class="graph-controls">
+        <button id="btnGraphEast" type="button">Pantai Timur (V1)</button>
+        <button id="btnGraphWest" type="button">Pantai Barat (V25)</button>
+        <button id="btnToggleGraphNodes" class="secondary-control" type="button">
+          Sembunyikan Node &amp; Label
+        </button>
+      </div>
+
+      <pre id="graphInfoPanel">Memuat graph jalan Wijayanto et al. (2025)...</pre>
+
+      <div class="graph-legend">
+        <span><i class="dot start-dot"></i> Titik awal jurnal</span>
+        <span><i class="dot node-dot"></i> Vertex jalan</span>
+        <span><i class="dot goal-dot"></i> TES V31</span>
+        <span><i class="line route-line"></i> Rute hasil A*</span>
+      </div>
+    </section>
+
+    <section class="osm-graph-section">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">EKSPERIMEN MULTI-SHELTER OSM</p>
+          <h2>Routing Pedestrian OpenStreetMap</h2>
+        </div>
+        <p>
+          Klik lokasi mana pun untuk mencari rute pedestrian terpendek dari kandidat yang
+          lolos audit snapping dan konektivitas.
+        </p>
+      </div>
+
+      <div class="audit-banner">
+        <strong>Hasil audit data:</strong>
+        2.405 node, 6.236 edge, 8 shelter lolos ambang 100 m, dan 16 kandidat
+        ditolak atau belum terverifikasi.
+      </div>
+
+      <div class="criteria-grid">
+        <article>
+          <strong>1. Koordinat valid</strong>
+          <span>Shelter tanpa koordinat tidak digunakan untuk routing.</span>
+        </article>
+        <article>
+          <strong>2. Snap ≤ 100 m</strong>
+          <span>Shelter harus dekat dengan node pedestrian OSM.</span>
+        </article>
+        <article>
+          <strong>3. Satu komponen</strong>
+          <span>Node shelter harus dapat dicapai dari node start.</span>
+        </article>
+        <article>
+          <strong>4. Ranking jarak</strong>
+          <span>Total = snap start + graph + snap shelter.</span>
+        </article>
+      </div>
+
+      <div id="osmMapStage" class="osm-map-stage">
+        <div id="osmGraphMap" aria-label="Peta graph pedestrian OpenStreetMap"></div>
+        <button id="btnFullscreenMap" class="fullscreen-map-button" type="button"
+          aria-label="Tampilkan peta dalam layar penuh">
+          Perbesar Peta
+        </button>
+      </div>
+
+      <div class="graph-controls">
+        <button id="btnOsmEast" type="button">Mulai dari Pantai Timur</button>
+        <button id="btnOsmWest" type="button">Mulai dari Pantai Barat</button>
+        <button id="btnShowShelters" type="button">Lihat Semua Shelter</button>
+        <button id="btnToggleOsmNodes" type="button">Tampilkan Node OSM</button>
+        <button id="btnReportBlockage" class="danger-control" type="button">
+          Laporkan Hambatan
+        </button>
+        <button id="btnResetBlockages" class="secondary-control" type="button">
+          Reset Hambatan
+        </button>
+      </div>
+
+      <div id="blockageHelp" class="blockage-help" hidden>
+        Mode laporan aktif: klik ruas pada garis rute oranye. Ruas tersebut akan
+        ditutup sementara dan A* langsung mencari rute lain.
+      </div>
+
+      <pre id="osmGraphInfoPanel">Memuat graph pedestrian OSM...</pre>
+
+      <div class="ranking-section">
+        <div class="ranking-heading">
+          <div>
+            <p class="eyebrow">HASIL PERBANDINGAN A*</p>
+            <h3>Top 3 Rute Shelter Terpendek</h3>
+          </div>
+          <p>Ranking berdasarkan jarak graph dan snapping, bukan tingkat keamanan.</p>
+        </div>
+        <div id="osmShelterRanking" class="ranking-grid">
+          <p class="ranking-empty">Menunggu perhitungan rute...</p>
+        </div>
+      </div>
+
+      <div class="graph-legend">
+        <span><i class="dot start-dot"></i> Posisi klik wisatawan</span>
+        <span><i class="dot node-dot"></i> Start node OSM hasil snapping</span>
+        <span><i class="shelter-symbol">S</i> Shelter lolos audit</span>
+        <span><i class="dot failed-dot"></i> Shelter gagal audit</span>
+        <span><i class="dot blockage-dot"></i> Hambatan yang dilaporkan</span>
+        <span><i class="line osm-route-line"></i> Rute A* mengikuti jalan OSM</span>
+      </div>
+    </section>
+
+    <section class="comparison-heading">
+      <p class="eyebrow">MODE PEMBANDING PROGRESS 1-2</p>
+      <h2>Grid Simulation + OSM Overlay</h2>
+      <p>Mode lama tetap dipertahankan untuk memperlihatkan evolusi arsitektur project.</p>
+    </section>
+
+    <!-- Grid Canvas -->
+    <section class="grid-container">
+      <div class="map-shell">
+        <div id="osmMap" aria-hidden="true"></div>
+        <canvas id="gridCanvas"></canvas>
+      </div>
+    </section>
+
+    <!-- Panel Informasi Hasil -->
+    <section class="info-section">
+      <h2>📋 Informasi Evakuasi</h2>
+      <pre id="infoPanel">Klik pada peta untuk memilih posisi Anda, lalu rute evakuasi akan ditampilkan.</pre>
+    </section>
+
+    <!-- Kontrol -->
+    <section class="controls">
+      <button id="btnReset" type="button">🔄 Reset</button>
+      <button id="btnToggleExplored" type="button">👁️ Toggle Explored</button>
+    </section>
+
+    <!-- Preset Skenario Demo -->
+    <section class="presets">
+      <h2>📌 Skenario Demo</h2>
+      <p class="presets-desc">Pilih salah satu titik awal untuk simulasi evakuasi:</p>
+      <div class="presets-buttons">
+        <button class="preset-btn" data-row="38" data-col="8" type="button">🏖️ Pantai Barat</button>
+        <button class="preset-btn" data-row="37" data-col="42" type="button">🏖️ Pantai Timur</button>
+        <button class="preset-btn" data-row="20" data-col="23" type="button">🏨 Area Hotel</button>
+        <button class="preset-btn" data-row="11" data-col="25" type="button">🛒 Pasar Wisata</button>
+      </div>
+    </section>
+
+    <!-- Legenda -->
+    <section class="legend">
+      <h2>🗺️ Legenda</h2>
+      <div class="legend-items">
+        <div class="legend-item">
+          <span class="legend-color" style="background:#f5f5f5; border:1px solid #ccc;"></span>
+          <span>Jalan / Area Terbuka <em>(cost: 1)</em></span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-color" style="background:#37474f;"></span>
+          <span>Bangunan / Sungai (Obstacle)</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-color" style="background:#bbdefb;"></span>
+          <span>Genangan Ringan <em>(cost: 1.5×)</em></span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-color" style="background:#64b5f6;"></span>
+          <span>Genangan Sedang <em>(cost: 2×)</em></span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-color" style="background:#1565c0;"></span>
+          <span>Genangan Berat <em>(cost: 3×)</em></span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-color" style="background:#4caf50;"></span>
+          <span>🏛️ Shelter Kandidat Bernomor <em>(Husa & Damayanti 2019)</em></span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-color" style="background:#e91e63;"></span>
+          <span>🧑 Posisi Anda (Titik Awal)</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-color" style="background:#ff9800;"></span>
+          <span>🟠 Rute Evakuasi (Jalur A*)</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-color" style="background:rgba(206,147,216,0.7); border:1px solid #9c27b0;"></span>
+          <span>Node Dieksplorasi A*</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Info Teknis -->
+    <section class="tech-info">
+      <h2>⚙️ Informasi Teknis</h2>
+      <ul>
+        <li><strong>Algoritma:</strong> A* (A-Star) dengan heuristik Euclidean Distance</li>
+        <li><strong>Grid:</strong> 40 × 50 sel (1 sel ≈ 40m × 40m)</li>
+        <li><strong>Konektivitas:</strong> 8 arah (termasuk diagonal)</li>
+        <li><strong>Biaya gerak:</strong> base × terrain_cost tujuan (kardinal: 1×, diagonal: √2×)</li>
+        <li><strong>Terrain cost:</strong> Jalan=1, Genangan Ringan=1.5, Sedang=2, Berat=3</li>
+        <li><strong>Progress 2:</strong> OSM background + grid overlay, A* tetap menggunakan grid 40×50</li>
+        <li><strong>Referensi shelter:</strong> Husa & Damayanti (2019), Table 3 dan Table 4</li>
+        <li><strong>Multi-shelter:</strong> A* dijalankan ke 17 shelter kandidat, lalu memilih total cost terendah</li>
+        <li><strong>Progress 3:</strong> A* graph pada vertex dan edge Wijayanto et al. (2025)</li>
+        <li><strong>Validasi graph:</strong> dibandingkan dengan rute Dijkstra sektor timur dan barat dari jurnal</li>
+        <li><strong>Kecepatan Progress 1-2:</strong> 1,39 m/s (~5 km/jam)</li>
+        <li><strong>Kecepatan Progress 3:</strong> 2,5 km/jam (~0,694 m/s), mengikuti skenario Wijayanto</li>
+        <li><strong>Shelter utama:</strong> TES Pangandaran, kapasitas ±6.000 jiwa</li>
+      </ul>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p>EvaTour — Proyek Mata Kuliah Kecerdasan Buatan | Algoritma A* | 2025</p>
+  </footer>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <!-- Script (ES6 Module) -->
+  <script type="module">
+    import { initGrid, reset, toggleExplored, setStart } from './js/grid.js';
+    import {
+      initGraphView,
+      runGraphScenario,
+      toggleGraphNodes
+    } from './js/graphView.js';
+    import {
+      initOsmGraphView,
+      runOsmGraphScenario,
+      showAllOsmShelters,
+      toggleOsmNodes,
+      toggleBlockageReportMode,
+      resetReportedBlockages
+    } from './js/osmGraphView.js';
+
+    // Inisialisasi saat DOM siap
+    document.addEventListener('DOMContentLoaded', () => {
+      initGrid('gridCanvas', 'infoPanel');
+      initGraphView('graphMap', 'graphInfoPanel');
+      initOsmGraphView('osmGraphMap', 'osmGraphInfoPanel', 'osmShelterRanking');
+
+      // Tombol kontrol
+      document.getElementById('btnReset').addEventListener('click', reset);
+      document.getElementById('btnToggleExplored').addEventListener('click', toggleExplored);
+      document.getElementById('btnGraphEast').addEventListener('click', () => {
+        runGraphScenario('V1');
+      });
+      document.getElementById('btnGraphWest').addEventListener('click', () => {
+        runGraphScenario('V25');
+      });
+      document.getElementById('btnToggleGraphNodes').addEventListener('click', event => {
+        const visible = toggleGraphNodes();
+        event.currentTarget.textContent = visible
+          ? 'Sembunyikan Node & Label'
+          : 'Tampilkan Node & Label';
+      });
+      document.getElementById('btnOsmEast').addEventListener('click', () => {
+        runOsmGraphScenario('V1', 'osmGraphInfoPanel', 'osmShelterRanking');
+      });
+      document.getElementById('btnOsmWest').addEventListener('click', () => {
+        runOsmGraphScenario('V25', 'osmGraphInfoPanel', 'osmShelterRanking');
+      });
+      document.getElementById('btnShowShelters').addEventListener('click', showAllOsmShelters);
+      document.getElementById('btnToggleOsmNodes').addEventListener('click', event => {
+        const visible = toggleOsmNodes();
+        event.currentTarget.textContent = visible
+          ? 'Sembunyikan Node OSM'
+          : 'Tampilkan Node OSM';
+      });
+      const osmMapStage = document.getElementById('osmMapStage');
+      const fullscreenButton = document.getElementById('btnFullscreenMap');
+
+      fullscreenButton.addEventListener('click', async () => {
+        if (document.fullscreenElement === osmMapStage) {
+          await document.exitFullscreen();
+        } else if (osmMapStage.requestFullscreen) {
+          await osmMapStage.requestFullscreen();
+        } else {
+          osmMapStage.classList.toggle('fullscreen-fallback');
+          fullscreenButton.textContent = osmMapStage.classList.contains('fullscreen-fallback')
+            ? 'Keluar Layar Penuh'
+            : 'Perbesar Peta';
+          window.dispatchEvent(new Event('resize'));
+        }
+      });
+
+      document.addEventListener('fullscreenchange', () => {
+        const active = document.fullscreenElement === osmMapStage;
+        fullscreenButton.textContent = active ? 'Keluar Layar Penuh' : 'Perbesar Peta';
+        fullscreenButton.setAttribute(
+          'aria-label',
+          active ? 'Keluar dari layar penuh' : 'Tampilkan peta dalam layar penuh'
+        );
+        window.setTimeout(() => window.dispatchEvent(new Event('resize')), 100);
+      });
+      document.getElementById('btnReportBlockage').addEventListener('click', event => {
+        const active = toggleBlockageReportMode();
+        event.currentTarget.textContent = active
+          ? 'Batalkan Laporan'
+          : 'Laporkan Hambatan';
+        document.getElementById('blockageHelp').hidden = !active;
+      });
+      document.getElementById('btnResetBlockages').addEventListener('click', () => {
+        resetReportedBlockages();
+        document.getElementById('btnReportBlockage').textContent = 'Laporkan Hambatan';
+        document.getElementById('blockageHelp').hidden = true;
+      });
+      window.addEventListener('evatour:blockage-reported', () => {
+        document.getElementById('btnReportBlockage').textContent = 'Laporkan Hambatan';
+        document.getElementById('blockageHelp').hidden = true;
+      });
+
+      // Tombol preset skenario demo
+      document.querySelectorAll('.preset-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const row = parseInt(btn.dataset.row, 10);
+          const col = parseInt(btn.dataset.col, 10);
+          setStart(row, col);
+        });
+      });
+
+      const scenarioGroups = {
+        grid: [
+          '.progress2-summary',
+          '.comparison-heading',
+          '.grid-container',
+          '.info-section',
+          '.controls',
+          '.presets',
+          '.legend',
+          '.tech-info'
+        ],
+        journal: ['.progress3-summary', '.graph-section'],
+        osm: ['.osm-graph-section']
+      };
+
+      function openScenario(name) {
+        Object.entries(scenarioGroups).forEach(([groupName, selectors]) => {
+          selectors.forEach(selector => {
+            const element = document.querySelector(selector);
+            if (element) {
+              element.classList.toggle('scenario-visible', groupName === name);
+              element.classList.toggle('scenario-hidden', groupName !== name);
+            }
+          });
+        });
+
+        document.querySelectorAll('.scenario-tab').forEach(tab => {
+          const active = tab.dataset.scenario === name;
+          tab.classList.toggle('active', active);
+          tab.setAttribute('aria-selected', String(active));
+        });
+
+        window.setTimeout(() => window.dispatchEvent(new Event('resize')), 80);
+      }
+
+      document.querySelectorAll('.scenario-tab').forEach(tab => {
+        tab.addEventListener('click', () => openScenario(tab.dataset.scenario));
+      });
+
+      openScenario('osm');
+    });
+  </script>
+</body>
+</html>
