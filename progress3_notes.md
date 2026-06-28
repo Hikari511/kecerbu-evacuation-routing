@@ -89,15 +89,15 @@ Path A* sama dengan path Dijkstra pada paper untuk kedua skenario.
 Pipeline OSMnx juga telah dijalankan pada jaringan jalan pejalan kaki yang
 mencakup kandidat shelter Husa & Damayanti (2019).
 
-Hasil pengambilan pada 21 Juni 2026:
+Hasil graph yang digunakan pada demo akhir:
 
 ```text
-Node OSM: 2.405
-Edge OSM: 6.236
+Node OSM: 2.420
+Edge OSM: 6.296
 Connected components: 8
-Komponen terbesar: 2.378 node
-Shelter lolos snapping <= 100 m: 8
-Shelter gagal / belum terverifikasi: 16
+Komponen terbesar: 2.393 node
+Shelter lolos audit <= 100 m: 15
+Shelter gagal / belum terverifikasi: 9
 ```
 
 Titik awal jurnal berhasil dihubungkan:
@@ -107,27 +107,29 @@ V1  -> node OSM terdekat: 6,0 meter
 V25 -> node OSM terdekat: 2,9 meter
 ```
 
-Delapan shelter yang lolos audit dapat dicapai dari V1 maupun V25. Dalam
-pengujian awal, A* memilih Pangandaran Mosque karena memiliki total jarak
+Lima belas shelter yang lolos audit dapat dicapai dari V1 maupun V25. Start
+menggunakan nearest-node snapping, sedangkan shelter menggunakan edge snapping
+ke ruas pedestrian terdekat dan dibuatkan node virtual sebagai goal. Dalam
+pengujian akhir, A* memilih Pangandaran Mosque karena memiliki total jarak
 pedestrian terendah:
 
 ```text
-V1  -> Pangandaran Mosque: sekitar 572,5 meter
-V25 -> Pangandaran Mosque: sekitar 226,6 meter
+V1  -> Pangandaran Mosque: sekitar 559,6 meter
+V25 -> Pangandaran Mosque: sekitar 234,2 meter
 ```
 
 Top 3 hasil perhitungan:
 
 ```text
 V1:
-1. Pangandaran Mosque  - 572,5 m  - 13,74 menit
-2. Tsunami Shelter BNPB - 1.152,0 m - 27,65 menit
-3. SMKN 1 Pangandaran  - 2.186,0 m - 52,46 menit
+1. Pangandaran Mosque  - 559,6 m  - 13,43 menit
+2. Tsunami Shelter BNPB - 1.158,1 m - 27,79 menit
+3. SMKN 1 Pangandaran  - 2.157,1 m - 51,77 menit
 
 V25:
-1. Pangandaran Mosque  - 226,6 m  - 5,44 menit
-2. Tsunami Shelter BNPB - 588,2 m - 14,12 menit
-3. SMKN 1 Pangandaran  - 2.275,4 m - 54,61 menit
+1. Pangandaran Mosque  - 234,2 m  - 5,62 menit
+2. Tsunami Shelter BNPB - 594,3 m - 14,26 menit
+3. SMKN 1 Pangandaran  - 2.246,5 m - 53,92 menit
 ```
 
 Kandidat ketiga pada kedua skenario melewati batas konservatif 40 menit.
@@ -158,7 +160,7 @@ jalan tertutup, atau hambatan sementara. Laporan belum disimpan ke server dan
 belum berlaku untuk pengguna lain.
 
 Dalam pengujian V1, pemblokiran edge pertama rute mengubah hasil dari sekitar
-572,5 meter menjadi 690,6 meter dan menghasilkan path alternatif.
+559,6 meter menjadi 677,7 meter dan menghasilkan path alternatif.
 
 ## Kalimat Presentasi
 

@@ -13,6 +13,10 @@ cache/
 .DS_Store
 Thumbs.db
 
+# Temporary review/extraction files
+tmp_*.txt
+*_review.txt
+
 # Local secrets
 .env
 .env.*

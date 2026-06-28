@@ -65,14 +65,30 @@ assert(raw.failedShelters.length === 9,
 assert(raw.shelters.every(shelter => shelter.snapMethod === 'edge'),
   'Semua shelter lolos menggunakan edge snapping');
 
-section('Tes 2: Titik awal');
+section('Tes 2: Audit ulang shelter setelah edge snapping');
+const passedShelterIds = new Set(raw.shelters.map(shelter => shelter.shelterId));
+const failedShelterIds = new Set(raw.failedShelters.map(shelter => shelter.shelterId));
+const newlyAcceptedShelters = ['S2_05', 'S2_12', 'S2_13', 'S2_15'];
+const expectedFailedShelters = [
+  'S1_03', 'S1_04', 'S1_07', 'S2_03', 'S2_04',
+  'S2_07', 'S2_08', 'S2_10', 'S2_16',
+];
+
+assert(newlyAcceptedShelters.every(id => passedShelterIds.has(id)),
+  'Shelter yang dekat ruas jalan lolos setelah edge snapping');
+assert(expectedFailedShelters.every(id => failedShelterIds.has(id)),
+  'Daftar 9 shelter gagal audit sesuai hasil verifikasi ulang');
+assert(raw.shelters.every(shelter => shelter.nearestNodeId.startsWith('shelter:')),
+  'Shelter lolos memakai node virtual sebagai goal A*');
+
+section('Tes 3: Titik awal');
 assert(raw.startPoints.length === 2, 'V1 dan V25 tersedia');
 assert(raw.startPoints.every(start => start.componentId === 0),
   'Kedua start berada di komponen utama');
 assert(raw.startPoints.every(start => start.snapDistanceMeters < 10),
   'Kedua start memiliki snapping < 10 meter');
 
-section('Tes 3: Semua shelter lolos dapat dicapai');
+section('Tes 4: Semua shelter lolos dapat dicapai');
 for (const start of raw.startPoints) {
   let reachable = 0;
   for (const shelter of raw.shelters) {
@@ -88,7 +104,7 @@ for (const start of raw.startPoints) {
     `${start.startId} dapat mencapai ${reachable}/${raw.shelters.length} shelter`);
 }
 
-section('Tes 4: Pemilihan shelter terbaik');
+section('Tes 5: Pemilihan shelter terbaik');
 for (const start of raw.startPoints) {
   const ranking = rankShelterRoutes(graph, nodes, start, raw.shelters);
   const best = ranking[0];
@@ -109,7 +125,7 @@ for (const start of raw.startPoints) {
   );
 }
 
-section('Tes 5: Laporan hambatan menghasilkan perhitungan ulang');
+section('Tes 6: Laporan hambatan menghasilkan perhitungan ulang');
 const eastStart = raw.startPoints.find(start => start.startId === 'V1');
 const initialRanking = rankShelterRoutes(graph, nodes, eastStart, raw.shelters);
 const initialBest = initialRanking[0];

@@ -83,3 +83,10 @@ python build_pedestrian_graph.py shelters_clean.csv pedestrian_graph_pangandaran
 ```
 
 File `shelters_clean.csv` sudah saya siapkan (22 baris valid + 2 baris invalid yang ditandai `validCoordinate=FALSE`).
+# CATATAN: DOKUMEN INI ARSIP LAMA
+
+Untuk demo akhir, gunakan `scripts/README_pipeline_current.md`.
+File ini masih menyimpan catatan awal sebelum graph OSM berhasil dijalankan
+dan sebelum shelter memakai edge snapping.
+
+---

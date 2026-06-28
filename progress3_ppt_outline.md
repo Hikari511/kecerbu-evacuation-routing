@@ -119,7 +119,6 @@ Visualisasi rute dan estimasi waktu
 Posisi pengguna dan shelter awalnya berbentuk koordinat latitude-longitude.
 Start dihubungkan ke node jalan terdekat, sedangkan shelter dihubungkan ke
 ruas jalan terdekat lalu dibuatkan node virtual sebagai goal A\*.
-Koordinat tersebut harus dihubungkan ke node graph terdekat melalui snapping.
 Setelah itu, A\* dijalankan menuju setiap shelter yang lolos audit.
 
 ---
@@ -498,7 +497,7 @@ A\* mencari jalur alternatif yang masih tersedia.
 **Hasil pengujian saat ini:**
 
 ```text
-254 test pass
+259 test pass
 0 fail
 ```
 
@@ -537,7 +536,26 @@ representasi jaringan jalan.
 
 ---
 
-## Slide 18 - Batasan Penelitian
+## Slide 18 - Status Rencana Progress 3
+
+| Rencana | Status | Catatan |
+|---|---|---|
+| Edge snapping menggantikan node snapping untuk shelter | Selesai | Shelter dipetakan ke ruas pedestrian terdekat |
+| Verifikasi ulang 16 shelter yang belum lolos | Selesai | Hasil akhir 15 lolos audit, 9 belum digunakan sebagai goal |
+| Pengujian start berbeda | Selesai | V1 dan V25 diuji pada graph OSM |
+| Pengujian hambatan jalan | Selesai | Edge dapat diblokir dan A\* menghitung ulang rute |
+| Penyempurnaan UI demo | Selesai | Peta, ranking, shelter, failed shelter, node/debug, dan fullscreen tersedia |
+| Cost risiko, elevasi, kapasitas | Future work | Tidak dipaksakan karena fokus penelitian adalah A\* searching |
+
+**Narasi:**
+
+Masih adanya 9 kandidat shelter yang belum digunakan sebagai goal bukan bug.
+Itu adalah hasil audit metodologis: kandidat tanpa koordinat valid atau terlalu
+jauh dari ruas pedestrian OSM tidak dipaksakan masuk ke graph.
+
+---
+
+## Slide 19 - Batasan Penelitian
 
 **Batasan saat ini:**
 
@@ -563,7 +581,7 @@ algoritma pencarian rute.
 
 ---
 
-## Slide 19 - Demo Aplikasi
+## Slide 20 - Demo Aplikasi
 
 **Urutan demo yang disarankan:**
 
@@ -587,7 +605,7 @@ algoritma pencarian rute.
 
 ---
 
-## Slide 20 - Kesimpulan Progress 3
+## Slide 21 - Kesimpulan Progress 3
 
 **Hasil utama:**
 
