@@ -17,6 +17,9 @@ Thumbs.db
 tmp_*.txt
 *_review.txt
 
+# Local report, presentation, and working notes
+*.md
+
 # Local secrets
 .env
 .env.*
